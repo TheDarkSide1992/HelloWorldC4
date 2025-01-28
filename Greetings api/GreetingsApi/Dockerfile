@@ -1,0 +1,25 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["GreetingsApi/GreetingsApi.csproj", "GreetingsApi/"]
+COPY ["Service/Service.csproj", "Service/"]
+COPY ["Repository/Repository.csproj", "Repository/"]
+RUN dotnet restore "GreetingsApi/GreetingsApi.csproj"
+COPY . .
+WORKDIR "/src/GreetingsApi"
+RUN dotnet build "GreetingsApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "GreetingsApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "GreetingsApi.dll"]
