@@ -1,0 +1,24 @@
+﻿services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    depends_on:
+      - service-language
+      - service-greeting
+      - service-planet
+  service-language:
+    build:
+      context: .
+      dockerfile: LanguageApi/Api/Dockerfile
+  service-planet:
+    build:
+      context: .
+      dockerfile: PlanetAPi/Api/Dockerfile
+  service-greeting:
+    build:
+      context: .
+      dockerfile: Greetings api/GreetingsApi/Dockerfile
+##  COMPOSE_DOCKER_CLIBUILD_=1DOCKER_BUILDKIT=1 docker compose up service-b -d
+##  COMPOSE_DOCKER_CLIBUILD_=1DOCKER_BUILDKIT=1 docker compose up service-a
+## docker compose up --build
