@@ -1,5 +1,4 @@
-﻿using Greetings_api.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service;
 
 namespace Greetings_api.Controller;
@@ -14,14 +13,14 @@ public class GreetingController : ControllerBase
         _service = service;
     }
 
-    [HttpPost()]
+    [HttpGet()]
     [Route("/greetings")]
-    public GreetingModel getGreeting([FromBody] LanguageDto languageDto)
+    public MessageReturn getGreeting([FromQuery] string language)
     {
-        var greeting = _service.GetGreeting(languageDto.language);
-        return new GreetingModel
+        var greeting = _service.GetGreeting(language);
+        return new MessageReturn
         {
-            Greeting = greeting
+            message = greeting
         };
     }
 }

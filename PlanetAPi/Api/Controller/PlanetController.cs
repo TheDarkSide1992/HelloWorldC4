@@ -1,5 +1,4 @@
-﻿using Greetings_api.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service;
 
 namespace Api.Controller;
@@ -14,10 +13,12 @@ public class PlanetController : ControllerBase
         _service = service;
     }
 
-    [HttpPost()]
+    [HttpGet()]
     [Route("/planets")]
-    public List<String> getPlanets([FromBody] LanguageDto languageDto)
+    public MessageReturn getPlanets([FromQuery] string language)
     {
-        return _service.getPlanets(languageDto.language.ToUpper());
+        var planets = _service.getPlanets(language.ToUpper());
+        var random = new Random();
+        return new MessageReturn{message = planets[random.Next(planets.Count-1)]};
     }
 }
